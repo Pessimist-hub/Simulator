@@ -21,3 +21,33 @@ Gunoaie puse prin diferite locuri de pe insulă când player-ul dă de ele, disp
 Un contor care ține minte câte gunoaie au mai rămas
 Un contor pentru coinuri
 Când gunoiul a ajuns la 0, apare barca/portalul și jocul se termină
+
+
+# Point
+x, y, z
+DistanceTo
+# Item
+name
+position
+value
+# Player
+position
+coins
+movementSpeed
+pickupRange
+Move, BuySpeed, BuyRange
+# Map
+width, depth
+trash (vector<Item>)
+Init, TrashLeft, Collect
+# AudioController
+PlayPickup
+# GameEngine
+Init
+Run
+# EventListener
+GetEvent
+# Renderer
+Clear
+PutText
+DrawMap
