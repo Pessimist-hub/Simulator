@@ -23,31 +23,31 @@ Un contor pentru coinuri
 Când gunoiul a ajuns la 0, apare barca/portalul și jocul se termină
 
 
-# Point
+## Point
 x, y, z
 DistanceTo
-# Item
+## Item
 name
 position
 value
-# Player
+## Player
 position
 coins
 movementSpeed
 pickupRange
 Move, BuySpeed, BuyRange
-# Map
+## Map
 width, depth
 trash (vector<Item>)
 Init, TrashLeft, Collect
-# AudioController
+## AudioController
 PlayPickup
-# GameEngine
+## GameEngine
 Init
 Run
-# EventListener
+## EventListener
 GetEvent
-# Renderer
+## Renderer
 Clear
 PutText
 DrawMap
