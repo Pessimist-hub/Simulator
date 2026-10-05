@@ -1,6 +1,3 @@
 #include "AudioController.hpp"
-#include <iostream>
 
-void AudioController::PlayPickup() {
-    std::cout << "*ding!*\n";
-}
+void AudioController::PlayPickup() {}
