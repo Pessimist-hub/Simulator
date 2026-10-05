@@ -51,3 +51,19 @@ GetEvent
 Clear
 PutText
 DrawMap
+
+
+
+## Cum se construiește proiectul
+
+Proiectul folosește un Makefile și compilatorul g++ (MinGW).
+
+1. Deschide consola în folderul proiectului.
+2. Pentru a curăța fișierele vechi:
+   make clean
+3. Pentru a construi proiectul:
+   make
+4. Se va crea fișierul IslandCleaner.exe, plus fișiere .o (obiect) pentru fiecare
+   fișier .cpp.
+5. Rulează jocul cu:
+   ./IslandCleaner.exe
