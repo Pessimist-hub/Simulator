@@ -15,7 +15,7 @@ Renderer, EventListener etc.
 și am cerut varianta în C++, cum cere laboratorul.
 
 ### Prompt 2: varianta C++
-Am cerut aceleași scripturi în C++ (fișiere .hpp și .cpp).
+Am cerut aceleași scripturi în C++ (fișiere .hpp).
 
 **Rezultat:** structurile Point, Item, Player, Map, EventListener, Renderer,
 AudioController, GameEngine și main.cpp.
@@ -43,7 +43,3 @@ le pot explica la laborator.
   `GameEngine.hpp`.
 - **.gitignore:** am verificat că `*.exe` e ignorat, ca `joc.exe` să nu ajungă
   pe GitHub.
-
-## Ce am verificat eu
-- Am compilat cu `g++ -std=c++17 *.cpp -o joc` și am rulat jocul în terminal.
-- Am testat mișcarea, luarea gunoiului și scăderea contorului de gunoi.
