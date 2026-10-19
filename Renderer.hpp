@@ -1,11 +1,8 @@
 #pragma once
-#include <string>
-#include "Map.hpp"
-#include "Player.hpp"
+#include "AbstractRenderer.hpp"
 
-
-struct Renderer {
-    void Clear();
-    void PutText(const std::string & text);
-    void DrawMap(Map& map, Player & player); 
+struct Renderer : public AbstractRenderer {
+    void Clear() override;
+    void PutText(const std::string& text) override;
+    void DrawMap(Map& map, Player& player) override;
 };
