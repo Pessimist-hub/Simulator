@@ -10,7 +10,7 @@ Item::Item(const Item& other)
 
 Item& Item::operator=(const Item& other) {
     name = other.name;
-    position = other.position;   // folosește Point::operator=
+    position = other.position;   
     value = other.value;
     return *this;
 }
@@ -23,7 +23,7 @@ std::istream& operator>>(std::istream& in, Item& item) {
     std::string name;
     Point position;
     int value;
-    in >> name >> position >> value;   // folosește >> de la Point
+    in >> name >> position >> value;   
     item = Item(name, position, value);
     return in;
 }

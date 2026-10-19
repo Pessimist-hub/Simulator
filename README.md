@@ -51,7 +51,45 @@ GetEvent
 Clear
 PutText
 DrawMap
+## AbstractRenderer
+Clasa abstractă de bază pentru Renderer (Clear, PutText, DrawMap sunt funcții virtuale pure)
 
+
+## Lab 3: Constructori și operatori
+
+În această lucrare au fost adăugați constructori și operatori pentru structurile care reprezintă elemente de joc, iar pentru clasa responsabilă de redare a fost creată o clasă de bază abstractă.
+
+### Ce s-a adăugat
+
+| Structură | Constructori | Operatori |
+|---|---|---|
+| `Point` | implicit și cu parametri `Point(x, y, z)` (valori implicite 0), de copiere | `=`, `==`, `!=`, `>>`, `<<` |
+| `Item` | implicit, cu parametri `Item(name, position, value)`, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
+| `Player` | implicit, cu parametri `Player(position, coins, speed, range)`, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
+| `Map` | implicit, cu parametri `Map(width, depth)`, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
+
+### Detalii
+
+- **Constructorul implicit și cel cu parametri** inițializează câmpurile prin lista de inițializare (`: x(_x), y(_y)`).
+- **Constructorul de copiere** creează un obiect nou dintr-unul existent (`Point b = a;`).
+- **Operatorul de atribuire `=`** copiază câmpurile într-un obiect care există deja (`b = a;`) și returnează `*this`.
+- **Operatorii `==` și `!=`** compară obiectele câmp cu câmp. Operatorii structurilor mari îi refolosesc pe cei ai structurilor mici (`Item` folosește `Point::operator==`).
+- **Operatorii `>>` și `<<`** sunt funcții în afara clasei, ca să funcționeze cu `std::cin` și `std::cout`. `Map` se citește astfel: lățime, adâncime, numărul de iteme, apoi itemele. Numele unui `Item` se citește ca un singur cuvânt (fără spații).
+- **`AbstractRenderer`** (fișier `AbstractRenderer.hpp`) conține funcții virtuale pure și destructor virtual. Clasa `Renderer` moștenește din ea și implementează funcțiile cu `override`.
+
+### Exemplu de utilizare
+
+```cpp
+Point a(1, 2, 3);
+Point b = a;          // constructor de copiere
+Point c;
+c = a;                // operator=
+std::cout << b << "\n";            // 1 2 3
+std::cout << (a == c) << "\n";     // 1
+
+Item bottle("Bottle", Point(2, 0, 5), 10);
+std::cout << bottle << "\n";       // Bottle 2 0 5 10
+```
 
 
 ## Cum se construiește proiectul
@@ -67,3 +105,5 @@ Proiectul folosește un Makefile și compilatorul g++ (MinGW).
    fișier .cpp.
 5. Rulează jocul cu:
    ./IslandCleaner.exe
+
+Notă: după ce modifici un fișier `.hpp`, rulează `make clean` înainte de `make`, pentru ca toate fișierele să fie recompilate.
