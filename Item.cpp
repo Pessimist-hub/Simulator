@@ -32,3 +32,4 @@ std::ostream& operator<<(std::ostream& out, const Item& item) {
     out << item.name << " " << item.position << " " << item.value;
     return out;
 }
+ 
