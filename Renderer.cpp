@@ -1,3 +1,5 @@
-#include "AudioController.hpp"
+#include "Renderer.hpp"
 
-void AudioController::PlayPickup() {}
+void Renderer::Clear() {}
+void Renderer::PutText(const std::string& text) {}
+void Renderer::DrawMap(Map& map, Player& player) {}
