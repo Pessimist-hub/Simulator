@@ -1,28 +1,46 @@
-#include "Point.hpp"
+#include "Player.hpp"
 
-Point::Point(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+Player::Player() : position(), coins(0), movementSpeed(1.0f), pickupRange(1.5f) {}
 
-Point::Point(const Point& other) : x(other.x), y(other.y), z(other.z) {}
+Player::Player(const Point& _position, int _coins, float _speed, float _range)
+    : position(_position), coins(_coins), movementSpeed(_speed), pickupRange(_range) {}
 
-Point& Point::operator=(const Point& other) {
-    x = other.x;
-    y = other.y;
-    z = other.z;
+Player::Player(const Player& other)
+    : position(other.position), coins(other.coins),
+      movementSpeed(other.movementSpeed), pickupRange(other.pickupRange) {}
+
+Player& Player::operator=(const Player& other) {
+    position = other.position;
+    coins = other.coins;
+    movementSpeed = other.movementSpeed;
+    pickupRange = other.pickupRange;
     return *this;
 }
 
-bool Point::operator==(const Point& other) const {
-    return x == other.x && y == other.y && z == other.z;
+bool Player::operator==(const Player& other) const {
+    return position == other.position && coins == other.coins &&
+           movementSpeed == other.movementSpeed && pickupRange == other.pickupRange;
 }
 
-std::istream& operator>>(std::istream& in, Point& point) {
-    float x, y, z;
-    in >> x >> y >> z;
-    point = Point(x, y, z);
+bool Player::operator!=(const Player& other) const {
+    return !(*this == other);
+}
+
+std::istream& operator>>(std::istream& in, Player& player) {
+    Point position;
+    int coins;
+    float speed, range;
+    in >> position >> coins >> speed >> range;
+    player = Player(position, coins, speed, range);
     return in;
 }
 
-std::ostream& operator<<(std::ostream& out, const Point& point) {
-    out << point.x << " " << point.y << " " << point.z;
+std::ostream& operator<<(std::ostream& out, const Player& player) {
+    out << player.position << " " << player.coins << " "
+        << player.movementSpeed << " " << player.pickupRange;
     return out;
 }
+
+void Player::Move(float dx, float dz, float mapWidth, float mapDepth) {}
+void Player::BuySpeed() {}
+void Player::BuyRange() {}

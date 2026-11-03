@@ -18,6 +18,10 @@ bool Map::operator==(const Map& other) const {
     return width == other.width && depth == other.depth && trash == other.trash;
 }
 
+bool Map::operator!=(const Map& other) const {
+    return !(*this == other);
+}
+
 std::istream& operator>>(std::istream& in, Map& map) {
     float width, depth;
     int count;

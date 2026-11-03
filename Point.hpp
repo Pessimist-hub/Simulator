@@ -7,11 +7,12 @@ struct Point {
     float y = 0;
     float z = 0;
 
-    Point(float _x = 0, float _y = 0, float _z = 0); 
-    Point(const Point& other);                       
+    Point(float _x = 0, float _y = 0, float _z = 0);  
+    Point(const Point& other);                        
 
     Point& operator=(const Point& other);
     bool operator==(const Point& other) const;
+    bool operator!=(const Point& other) const;
 
     float DistanceTo(const Point& other) const {
         float dx = x - other.x;

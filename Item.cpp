@@ -19,6 +19,10 @@ bool Item::operator==(const Item& other) const {
     return name == other.name && position == other.position && value == other.value;
 }
 
+bool Item::operator!=(const Item& other) const {
+    return !(*this == other);
+}
+
 std::istream& operator>>(std::istream& in, Item& item) {
     std::string name;
     Point position;
@@ -32,4 +36,3 @@ std::ostream& operator<<(std::ostream& out, const Item& item) {
     out << item.name << " " << item.position << " " << item.value;
     return out;
 }
- 

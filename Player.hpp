@@ -14,6 +14,7 @@ struct Player {
 
     Player& operator=(const Player& other);
     bool operator==(const Player& other) const;
+    bool operator!=(const Player& other) const;
 
     void Move(float dx, float dz, float mapWidth, float mapDepth);
     void BuySpeed();

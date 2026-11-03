@@ -14,6 +14,7 @@ struct Item {
 
     Item& operator=(const Item& other);
     bool operator==(const Item& other) const;
+    bool operator!=(const Item& other) const;
 };
 
 std::istream& operator>>(std::istream& in, Item& item);

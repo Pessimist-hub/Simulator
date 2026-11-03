@@ -14,6 +14,7 @@ struct Map {
 
     Map& operator=(const Map& other);
     bool operator==(const Map& other) const;
+    bool operator!=(const Map& other) const;
 
     void Init();
     int TrashLeft();
