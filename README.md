@@ -55,6 +55,22 @@ DrawMap
 Clasa abstractă de bază pentru Renderer (Clear, PutText, DrawMap sunt funcții virtuale pure)
 
 
+## Lab 4: Biblioteca standard C++ și STL
+
+În această lucrare codul jocului a fost modernizat pentru a folosi biblioteca standard C++: containere STL (`std::vector`, `std::sort`, `std::find_if`, `std::copy`), fluxuri de intrare/ieșire, `std::string`, referințe și `std::unique_ptr` pentru resurse. Astfel, codul este mai sigur, mai flexibil și respectă stilul modern C++.
+
+### Cum se construiește proiectul
+
+1. Deschide consola în folderul proiectului.
+2. Rulează:
+   `make clean`
+   `make`
+3. Se va crea executabilul `IslandCleaner.exe`.
+
+### Demo
+
+Executabilul afișează elementele de joc, sortează numele obiectelor și verifică că algoritmii STL funcționează corect.
+
 ## Lab 3: Constructori și operatori
 
 În această lucrare au fost adăugați constructori și operatori pentru structurile care reprezintă elemente de joc, iar pentru clasa responsabilă de redare a fost creată o clasă de bază abstractă.

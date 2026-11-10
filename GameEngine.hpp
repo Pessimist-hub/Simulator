@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "Map.hpp"
 #include "Player.hpp"
 #include "EventListener.hpp"
@@ -8,9 +9,9 @@
 struct GameEngine {
     Map map;
     Player player;
-    EventListener listener;
-    Renderer renderer;
-    AudioController audio;
+    std::unique_ptr<EventListener> listener;
+    std::unique_ptr<AbstractRenderer> renderer;
+    std::unique_ptr<AudioController> audio;
 
     void Init();
     void Run();

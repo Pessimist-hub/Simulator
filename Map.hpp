@@ -1,11 +1,12 @@
 #pragma once
-#include <vector>
+#include <algorithm>
 #include <iostream>
+#include <vector>
 #include "Item.hpp"
 
 struct Map {
-    float width = 10;
-    float depth = 10;
+    float width = 10.0f;
+    float depth = 10.0f;
     std::vector<Item> trash;
 
     Map();
@@ -17,8 +18,9 @@ struct Map {
     bool operator!=(const Map& other) const;
 
     void Init();
-    int TrashLeft();
-    int Collect(Point playerPos, float range);
+    int TrashLeft() const;
+    int Collect(const Point& playerPos, float range);
+    void SortByValue();
 };
 
 std::istream& operator>>(std::istream& in, Map& map);

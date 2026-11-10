@@ -22,6 +22,10 @@ bool Player::operator==(const Player& other) const {
            movementSpeed == other.movementSpeed && pickupRange == other.pickupRange;
 }
 
+bool Player::operator!=(const Player& other) const {
+    return !(*this == other);
+}
+
 std::istream& operator>>(std::istream& in, Player& player) {
     Point position;
     int coins;

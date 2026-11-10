@@ -1,34 +1,36 @@
-all: IslandCleaner
+CPPFLAGS = -std=c++17
 
-IslandCleaner: Point.o Item.o Player.o Map.o EventListener.o Renderer.o AudioController.o GameEngine.o main.o
-	g++ -o IslandCleaner.exe Point.o Item.o Player.o Map.o EventListener.o Renderer.o AudioController.o GameEngine.o main.o
+all: IslandCleaner.exe
 
-Point.o:
-	g++ -std=c++17 Point.cpp -o Point.o -c
+IslandCleaner.exe: Point.o Item.o Player.o Map.o EventListener.o Renderer.o AudioController.o GameEngine.o Main.o
+	g++ $(CPPFLAGS) -o IslandCleaner.exe Point.o Item.o Player.o Map.o EventListener.o Renderer.o AudioController.o GameEngine.o Main.o
 
-Item.o:
-	g++ -std=c++17 Item.cpp -o Item.o -c
+Point.o: Point.cpp Point.hpp
+	g++ $(CPPFLAGS) -c Point.cpp -o Point.o
 
-Player.o:
-	g++ -std=c++17 Player.cpp -o Player.o -c
+Item.o: Item.cpp Item.hpp Point.hpp
+	g++ $(CPPFLAGS) -c Item.cpp -o Item.o
 
-Map.o:
-	g++ -std=c++17 Map.cpp -o Map.o -c
+Player.o: Player.cpp Player.hpp Point.hpp
+	g++ $(CPPFLAGS) -c Player.cpp -o Player.o
 
-EventListener.o:
-	g++ -std=c++17 EventListener.cpp -o EventListener.o -c
+Map.o: Map.cpp Map.hpp Item.hpp
+	g++ $(CPPFLAGS) -c Map.cpp -o Map.o
 
-Renderer.o:
-	g++ -std=c++17 Renderer.cpp -o Renderer.o -c
+EventListener.o: EventListener.cpp EventListener.hpp
+	g++ $(CPPFLAGS) -c EventListener.cpp -o EventListener.o
 
-AudioController.o:
-	g++ -std=c++17 AudioController.cpp -o AudioController.o -c
+Renderer.o: Renderer.cpp Renderer.hpp AbstractRenderer.hpp Map.hpp Player.hpp
+	g++ $(CPPFLAGS) -c Renderer.cpp -o Renderer.o
 
-GameEngine.o:
-	g++ -std=c++17 GameEngine.cpp -o GameEngine.o -c
+AudioController.o: AudioController.cpp AudioController.hpp
+	g++ $(CPPFLAGS) -c AudioController.cpp -o AudioController.o
 
-main.o:
-	g++ -std=c++17 main.cpp -o main.o -c
+GameEngine.o: GameEngine.cpp GameEngine.hpp
+	g++ $(CPPFLAGS) -c GameEngine.cpp -o GameEngine.o
+
+Main.o: Main.cpp Point.hpp Item.hpp Player.hpp Map.hpp GameEngine.hpp
+	g++ $(CPPFLAGS) -c Main.cpp -o Main.o
 
 clean:
 	rm -f *.o *.exe
