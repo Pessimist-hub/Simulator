@@ -7,6 +7,8 @@ struct Item {
     std::string name;
     Point position;
     int value = 0;
+    float fallSpeed = 0.0f;
+    bool falling = false;
 
     Item();
     Item(const std::string& _name, const Point& _position, int _value);

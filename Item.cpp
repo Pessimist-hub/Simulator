@@ -6,17 +6,21 @@ Item::Item(const std::string& _name, const Point& _position, int _value)
     : name(_name), position(_position), value(_value) {}
 
 Item::Item(const Item& other)
-    : name(other.name), position(other.position), value(other.value) {}
+    : name(other.name), position(other.position), value(other.value),
+      fallSpeed(other.fallSpeed), falling(other.falling) {}
 
 Item& Item::operator=(const Item& other) {
     name = other.name;
     position = other.position;   
     value = other.value;
+    fallSpeed = other.fallSpeed;
+    falling = other.falling;
     return *this;
 }
 
 bool Item::operator==(const Item& other) const {
-    return name == other.name && position == other.position && value == other.value;
+    return name == other.name && position == other.position && value == other.value &&
+           fallSpeed == other.fallSpeed && falling == other.falling;
 }
 
 bool Item::operator!=(const Item& other) const {

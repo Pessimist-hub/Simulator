@@ -41,10 +41,66 @@ int FindTrashModel(const std::string& name) {
     return -1;
 }
 
-void DrawTree(float x, float z) {
-    DrawCylinder(Vector3{x, 0.65f, z}, 0.16f, 0.12f, 1.3f, 8, BROWN);
-    DrawSphere(Vector3{x, 1.65f, z}, 0.72f, DARKGREEN);
-    DrawSphere(Vector3{x - 0.28f, 1.42f, z + 0.18f}, 0.45f, GREEN);
+void DrawTree(const Decoration& decoration) {
+    const float x = decoration.position.x;
+    const float z = decoration.position.z;
+    const float scale = decoration.scale;
+    DrawCylinder(Vector3{x, 0.65f * scale, z}, 0.16f * scale,
+                 0.12f * scale, 1.3f * scale, 8, BROWN);
+    DrawSphere(Vector3{x, 1.65f * scale, z}, 0.72f * scale, DARKGREEN);
+    DrawSphere(Vector3{x - 0.28f * scale, 1.42f * scale, z + 0.18f * scale},
+               0.45f * scale, GREEN);
+}
+
+void DrawDecoration(const Decoration& decoration) {
+    const float x = decoration.position.x;
+    const float z = decoration.position.z;
+    const float scale = decoration.scale;
+    switch (decoration.type) {
+        case DecorationType::Tree:
+            DrawTree(decoration);
+            break;
+        case DecorationType::Rock:
+            DrawCube(Vector3{x, 0.28f * scale, z},
+                     0.9f * scale, 0.55f * scale, 0.72f * scale,
+                     Color{116, 123, 116, 255});
+            DrawCube(Vector3{x - 0.18f * scale, 0.52f * scale,
+                             z - 0.06f * scale},
+                     0.48f * scale, 0.4f * scale, 0.42f * scale,
+                     Color{143, 149, 140, 255});
+            break;
+        case DecorationType::Bush:
+            DrawSphere(Vector3{x, 0.42f * scale, z},
+                       0.48f * scale, DARKGREEN);
+            DrawSphere(Vector3{x - 0.27f * scale, 0.36f * scale,
+                               z + 0.12f * scale},
+                       0.3f * scale, GREEN);
+            DrawSphere(Vector3{x + 0.25f * scale, 0.34f * scale,
+                               z - 0.1f * scale},
+                       0.32f * scale, LIME);
+            break;
+        case DecorationType::Flower:
+            DrawCylinder(Vector3{x, 0.14f * scale, z},
+                         0.025f * scale, 0.018f * scale,
+                         0.28f * scale, 5, DARKGREEN);
+            DrawSphere(Vector3{x, 0.3f * scale, z},
+                       0.09f * scale, (static_cast<int>(x * 7.0f + z * 3.0f) % 2)
+                           ? PINK : YELLOW);
+            break;
+        case DecorationType::Palm:
+            DrawCylinder(Vector3{x, 1.0f * scale, z},
+                         0.17f * scale, 0.11f * scale,
+                         2.0f * scale, 8, BROWN);
+            DrawSphere(Vector3{x, 2.05f * scale, z},
+                       0.64f * scale, DARKGREEN);
+            DrawSphere(Vector3{x - 0.42f * scale, 1.88f * scale,
+                               z + 0.14f * scale},
+                       0.42f * scale, GREEN);
+            DrawSphere(Vector3{x + 0.4f * scale, 1.9f * scale,
+                               z - 0.16f * scale},
+                       0.4f * scale, LIME);
+            break;
+    }
 }
 
 Vector3 PlayerPoint(const Vector3& center, float angle, float x, float y, float z,
@@ -210,13 +266,8 @@ void Renderer::DrawMap(const Map& map, const Player& player,
     DrawCubeWires(Vector3{centerX, 0.1f, centerZ},
                   map.width, 0.2f, map.depth, DARKGREEN);
 
-    for (float x = 3.0f; x < map.width; x += 7.0f) {
-        DrawTree(x, 2.0f);
-        DrawTree(x, map.depth - 2.0f);
-    }
-    for (float z = 9.0f; z < map.depth - 2.0f; z += 8.0f) {
-        DrawTree(2.0f, z);
-        DrawTree(map.width - 2.0f, z);
+    for (const Decoration& decoration : map.decorations) {
+        DrawDecoration(decoration);
     }
 
     Point nearestCollectiblePosition;
@@ -229,6 +280,15 @@ void Renderer::DrawMap(const Map& map, const Player& player,
             nearestDistance = distance;
             nearestCollectiblePosition = item.position;
             hasNearbyCollectible = true;
+        }
+
+        if (item.falling) {
+            DrawCylinder(Vector3{item.position.x, 0.02f, item.position.z},
+                         0.38f, 0.38f, 0.025f, 8, Color{35, 44, 35, 90});
+            DrawLine3D(Vector3{item.position.x, item.position.y + 0.5f,
+                               item.position.z},
+                       Vector3{item.position.x, 0.25f, item.position.z},
+                       Color{235, 245, 255, 95});
         }
 
         if (modelIndex >= 0) {
@@ -293,19 +353,24 @@ void Renderer::DrawMap(const Map& map, const Player& player,
     DrawText(TextFormat("%i / %i", static_cast<int>(player.stamina),
                         static_cast<int>(player.maxStamina)),
              322, 115, 16, WHITE);
-    if (ui.IsOvertime()) {
-        DrawText("PRELUNGIRI - curata insula fara limita de timp",
-                 24, 143, 18, ORANGE);
-    } else {
-        const int seconds = static_cast<int>(ui.ChallengeTimeRemaining());
-        DrawText(TextFormat("Timp ramas: %02i:%02i", seconds / 60, seconds % 60),
-                 24, 143, 18, seconds <= 20 ? ORANGE : WHITE);
-    }
+    const int seconds = static_cast<int>(ui.ChallengeTimeRemaining());
+    DrawText(TextFormat("Val: %i | Timp ramas: %02i:%02i", ui.WaveNumber() + 1,
+                        seconds / 60, seconds % 60),
+             24, 143, 18, seconds <= 20 ? ORANGE : WHITE);
 
     DrawText("W A S D - miscare | Shift - sprint | Click - colecteaza | Esc - meniu",
              24, GetScreenHeight() - 34, 18, WHITE);
     DrawText("Apropie-te de un obiect; cercul auriu indica ce poti colecta.",
              24, GetScreenHeight() - 60, 16, WHITE);
+
+    if (ui.IsWaveAnnouncementVisible()) {
+        DrawRectangleRounded(
+            Rectangle{GetScreenWidth() * 0.5f - 230.0f, 62.0f, 460.0f, 60.0f},
+            0.22f, 8, Color{15, 48, 65, 225});
+        DrawText(TextFormat("A plouat cu gunoi! +%i obiecte",
+                            ui.LastWaveTrashCount()),
+                 GetScreenWidth() / 2 - 190, 80, 21, ORANGE);
+    }
 
     if (rewardPopupTimer > 0.0f) {
         rewardPopupTimer = std::max(0.0f, rewardPopupTimer - GetFrameTime());

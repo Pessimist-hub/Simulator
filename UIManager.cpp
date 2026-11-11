@@ -52,10 +52,8 @@ void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades,
                        float deltaTime) {
     if (screen == Screen::Playing || screen == Screen::PlayingUpgrades) {
         if (map.TrashLeft() == 0) {
-            wonInTime = !overtime;
-            if (wonInTime) {
-                player.coins += OnTimeBonus;
-            }
+            wonInTime = true;
+            player.coins += OnTimeBonus;
             screen = Screen::Victory;
             return;
         }
@@ -72,10 +70,19 @@ void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades,
             return;
         }
 
-        if (!overtime && deltaTime > 0.0f) {
-            challengeTimeRemaining = std::max(0.0f, challengeTimeRemaining - deltaTime);
+        if (deltaTime > 0.0f) {
+            waveAnnouncementTimer = std::max(
+                0.0f, waveAnnouncementTimer - deltaTime);
+            challengeTimeRemaining = std::max(
+                0.0f, challengeTimeRemaining - deltaTime);
             if (challengeTimeRemaining == 0.0f) {
-                overtime = true;
+                ++waveNumber;
+                const int trashToSpawn = FirstWaveTrashCount +
+                    (waveNumber - 1) * AdditionalTrashPerWave;
+                lastWaveTrashCount = map.SpawnTrashWave(
+                    trashToSpawn, player.position);
+                challengeTimeRemaining = ChallengeDuration;
+                waveAnnouncementTimer = 5.0f;
             }
         }
     }
@@ -292,8 +299,16 @@ float UIManager::ChallengeTimeRemaining() const {
     return challengeTimeRemaining;
 }
 
-bool UIManager::IsOvertime() const {
-    return overtime;
+int UIManager::WaveNumber() const {
+    return waveNumber;
+}
+
+int UIManager::LastWaveTrashCount() const {
+    return lastWaveTrashCount;
+}
+
+bool UIManager::IsWaveAnnouncementVisible() const {
+    return waveAnnouncementTimer > 0.0f;
 }
 
 void UIManager::StartNewGame(Map& map, Player& player, UpgradeManager& upgrades) {
@@ -301,7 +316,9 @@ void UIManager::StartNewGame(Map& map, Player& player, UpgradeManager& upgrades)
     player = Player(Point(map.width * 0.5f, 0.0f, map.depth * 0.5f), 0, 2.2f, 1.5f);
     upgrades.Reset();
     challengeTimeRemaining = ChallengeDuration;
-    overtime = false;
+    waveAnnouncementTimer = 0.0f;
+    waveNumber = 0;
+    lastWaveTrashCount = 0;
     wonInTime = false;
     screen = Screen::Playing;
 }

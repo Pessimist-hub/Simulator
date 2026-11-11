@@ -18,9 +18,12 @@ void GameEngine::Run() {
         float dx = 0.0f;
         float dz = 0.0f;
         if (ui.ShouldSimulate()) {
+            map.UpdateFallingTrash(deltaTime);
             listener->GetMovement(dx, dz);
             const bool sprinting = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+            const Point previousPosition = player.position;
             player.Move(dx, dz, map.width, map.depth, deltaTime, sprinting);
+            map.ResolveMovement(previousPosition, player.position, 0.4f);
 
             if (ui.ShouldCollectTrash() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 Point collectedPosition;

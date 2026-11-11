@@ -13,7 +13,9 @@ public:
     bool ShouldSimulate() const;
     bool ShouldCollectTrash() const;
     float ChallengeTimeRemaining() const;
-    bool IsOvertime() const;
+    int WaveNumber() const;
+    int LastWaveTrashCount() const;
+    bool IsWaveAnnouncementVisible() const;
 
 private:
     enum class Screen {
@@ -28,10 +30,14 @@ private:
 
     static constexpr float ChallengeDuration = 120.0f;
     static constexpr int OnTimeBonus = 100;
+    static constexpr int FirstWaveTrashCount = 12;
+    static constexpr int AdditionalTrashPerWave = 6;
 
     Screen screen = Screen::MainMenu;
     float challengeTimeRemaining = ChallengeDuration;
-    bool overtime = false;
+    float waveAnnouncementTimer = 0.0f;
+    int waveNumber = 0;
+    int lastWaveTrashCount = 0;
     bool wonInTime = false;
 
     void StartNewGame(Map& map, Player& player, UpgradeManager& upgrades);

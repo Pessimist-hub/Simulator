@@ -44,14 +44,18 @@ nu trebuie adaugate in Git.
 
 - Alege **Start Joc** din meniul principal.
 - Misca jucatorul cu `W`, `A`, `S`, `D`.
+- Gunoiul initial este imprastiat aleatoriu, nu in randuri.
 - Tine apasat `Shift` in timp ce te misti pentru sprint; stamina se consuma
   si se regenereaza automat cand mergi normal sau stai pe loc.
 - Deplasarea este la viteza normala, jucatorul se roteste spre directia de mers
   si are brate si picioare articulate, animate in directia deplasarii.
 - Apropie-te de un deseu pana apare cercul auriu, apoi da clic stanga ca sa-l
   colectezi. Apar particule si un afisaj cu monedele castigate.
-- Curata insula in 2 minute pentru un bonus de 100 de monede. Daca timpul
-  expira, intra in prelungiri si poti continua pana colectezi toate deseurile.
+- Ai 2 minute sa cureti insula. Cand timpul expira, cade un nou val de gunoi
+  din cer, timerul se reseteaza, iar fiecare val ulterior contine mai multe
+  obiecte. Jocul continua pana cand colectezi tot gunoiul acumulat.
+- Evita copacii, palmierii, tufisurile, pietrele si gunoiul: coliziunile opresc
+  jucatorul si permit sa alunece pe langa obstacole.
 - Apasa `Esc` in joc pentru meniul de pauza: poti continua, reveni la meniul
   principal sau iesi. Cronometrul se opreste cat timp jocul este in pauza.
 - Apasa `U` sau butonul **Upgrade-uri** pentru magazin. Jocul continua in timp
@@ -66,7 +70,9 @@ nu trebuie adaugate in Git.
 
 ## Continutul jocului
 
-- Insula 3D de 50 × 40 de unitati si 40 de obiecte colectabile.
+- Insula 3D de 50 × 40 de unitati, cu 40 de obiecte initiale si valuri
+  aleatorii suplimentare de gunoi.
+- Copaci, palmieri, tufisuri, pietre, flori si decoratiuni imprastiate pe insula.
 - Zece modele GLB de deseuri, convertite din modelul FBX furnizat, aflate in
   `Assets/Trash`.
 - Meniu principal, magazin de upgrade-uri si ecran de victorie.
