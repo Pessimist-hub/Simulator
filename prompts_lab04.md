@@ -10,8 +10,8 @@ exacte ale mesajelor.
 ### Prompt 1: adaptarea proiectului la cerinta Lab 4
 
 Am trimis cerinta laboratorului despre utilizarea bibliotecii standard C++ si
-am cerut adaptarea proiectului Island Cleaner Simulator de la Lab 3. Cerinta
-solicita containere STL, fluxuri de intrare/iesire, referinte si smart
+am cerut adaptarea proiectului Island Cleaner Simulator. Cerinta solicita
+containere STL, fluxuri de intrare/iesire, referinte si smart
 pointers, `std::string` si algoritmi STL pentru cautare, sortare, comparare si
 copiere. Modificarile trebuiau facute pe ramura `lab04`, inclusiv actualizarea
 fisierului de build.
@@ -22,9 +22,8 @@ actualizat Makefile-ul si adaugata sectiunea Lab 4 in README.md.
 
 ### Prompt 2: documentarea prompturilor folosite
 
-Am cerut un fisier `prompts_lab04.md`, in acelasi stil ca fisierul de la
-laboratorul precedent, care sa descrie solicitarile, rezultatele si
-verificarile facute pentru Lab 4.
+Am cerut un fisier `prompts_lab04.md` care sa descrie solicitarile,
+rezultatele si verificarile facute pentru Lab 4.
 
 **Rezultat:** a fost creat acest fisier. Descrierile sunt rezumate
 retrospective, nu transcrieri exacte.
