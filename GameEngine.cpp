@@ -13,7 +13,7 @@ void GameEngine::Init() {
 void GameEngine::Run() {
     while (renderer && !renderer->ShouldClose() && !ui.ShouldExit()) {
         const float deltaTime = GetFrameTime();
-        ui.Update(map, player, upgrades);
+        ui.Update(map, player, upgrades, deltaTime);
 
         float dx = 0.0f;
         float dz = 0.0f;
@@ -21,11 +21,16 @@ void GameEngine::Run() {
             listener->GetMovement(dx, dz);
             const bool sprinting = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
             player.Move(dx, dz, map.width, map.depth, deltaTime, sprinting);
-            const int reward = map.Collect(player.position, player.pickupRange);
-            player.coins += reward * player.coinMultiplier;
 
-            if (reward > 0) {
-                audio->PlayPickup();
+            if (ui.ShouldCollectTrash() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                Point collectedPosition;
+                const int reward = map.CollectNearest(
+                    player.position, player.pickupRange, collectedPosition);
+                if (reward > 0) {
+                    player.coins += reward * player.coinMultiplier;
+                    renderer->SpawnCollectionEffect(collectedPosition, reward);
+                    audio->PlayPickup();
+                }
             }
         }
 

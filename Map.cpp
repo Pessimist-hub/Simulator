@@ -79,18 +79,20 @@ int Map::TrashLeft() const {
         trash.begin(), trash.end(), [](const Item& item) { return item.value > 0; }));
 }
 
-int Map::Collect(const Point& playerPos, float range) {
-    int reward = 0;
-    const auto end = std::remove_if(trash.begin(), trash.end(),
-        [&playerPos, range, &reward](const Item& item) {
-            const bool collected = item.position.DistanceTo(playerPos) <= range;
-            if (collected) {
-                reward += item.value;
-            }
-            return collected;
+int Map::CollectNearest(const Point& playerPos, float range, Point& collectedPosition) {
+    const auto nearest = std::min_element(trash.begin(), trash.end(),
+        [&playerPos](const Item& left, const Item& right) {
+            return left.position.DistanceTo(playerPos) <
+                   right.position.DistanceTo(playerPos);
         });
+    if (nearest == trash.end() ||
+        nearest->position.DistanceTo(playerPos) > range) {
+        return 0;
+    }
 
-    trash.erase(end, trash.end());
+    const int reward = nearest->value;
+    collectedPosition = nearest->position;
+    trash.erase(nearest);
     return reward;
 }
 

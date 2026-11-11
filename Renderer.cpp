@@ -162,6 +162,27 @@ void Renderer::PutText(const std::string& text) {
     DrawText(text.c_str(), 24, 22, 24, WHITE);
 }
 
+void Renderer::SpawnCollectionEffect(const Point& position, int reward) {
+    constexpr float ParticleLifetime = 0.75f;
+    for (std::size_t index = 0; index < collectionParticles.size(); ++index) {
+        const float angle = 2.0f * PI * static_cast<float>(index) /
+                            static_cast<float>(collectionParticles.size());
+        const float speed = 0.8f + 0.12f * static_cast<float>(index % 5);
+        collectionParticles[index] = CollectionParticle{
+            ToVector3(position, 0.35f),
+            Vector3{std::cos(angle) * speed,
+                    1.2f + 0.15f * static_cast<float>(index % 4),
+                    std::sin(angle) * speed},
+            ParticleLifetime,
+            index % 2 == 0 ? LIME : GOLD
+        };
+    }
+
+    rewardPopupPosition = position;
+    rewardPopupValue = reward;
+    rewardPopupTimer = ParticleLifetime;
+}
+
 void Renderer::DrawMap(const Map& map, const Player& player,
                        const UIManager& ui, const UpgradeManager& upgrades) {
     const float centerX = map.width * 0.5f;
@@ -198,8 +219,18 @@ void Renderer::DrawMap(const Map& map, const Player& player,
         DrawTree(map.width - 2.0f, z);
     }
 
+    Point nearestCollectiblePosition;
+    bool hasNearbyCollectible = false;
+    float nearestDistance = player.pickupRange;
     for (const Item& item : map.trash) {
         const int modelIndex = FindTrashModel(item.name);
+        const float distance = item.position.DistanceTo(player.position);
+        if (distance <= nearestDistance) {
+            nearestDistance = distance;
+            nearestCollectiblePosition = item.position;
+            hasNearbyCollectible = true;
+        }
+
         if (modelIndex >= 0) {
             Color tint = WHITE;
             if (item.name == "GlassShard" || item.name == "WineBottle") {
@@ -223,6 +254,27 @@ void Renderer::DrawMap(const Map& map, const Player& player,
         }
     }
 
+    if (hasNearbyCollectible) {
+        DrawCircle3D(ToVector3(nearestCollectiblePosition, 0.04f),
+                     0.55f, Vector3{1.0f, 0.0f, 0.0f}, 90.0f, GOLD);
+    }
+
+    const float effectDelta = std::min(GetFrameTime(), 0.1f);
+    for (CollectionParticle& particle : collectionParticles) {
+        if (particle.lifetime <= 0.0f) {
+            continue;
+        }
+        particle.lifetime -= effectDelta;
+        particle.position.x += particle.velocity.x * effectDelta;
+        particle.position.y += particle.velocity.y * effectDelta;
+        particle.position.z += particle.velocity.z * effectDelta;
+        particle.velocity.y -= 2.8f * effectDelta;
+        const float alpha = std::clamp(particle.lifetime / 0.75f, 0.0f, 1.0f);
+        Color color = particle.color;
+        color.a = static_cast<unsigned char>(255.0f * alpha);
+        DrawSphere(particle.position, 0.075f * alpha, color);
+    }
+
     DrawPlayer(player, playerPosition);
     EndMode3D();
 
@@ -241,10 +293,29 @@ void Renderer::DrawMap(const Map& map, const Player& player,
     DrawText(TextFormat("%i / %i", static_cast<int>(player.stamina),
                         static_cast<int>(player.maxStamina)),
              322, 115, 16, WHITE);
-    DrawText("W A S D - miscare | Shift - sprint | U - upgrade-uri",
+    if (ui.IsOvertime()) {
+        DrawText("PRELUNGIRI - curata insula fara limita de timp",
+                 24, 143, 18, ORANGE);
+    } else {
+        const int seconds = static_cast<int>(ui.ChallengeTimeRemaining());
+        DrawText(TextFormat("Timp ramas: %02i:%02i", seconds / 60, seconds % 60),
+                 24, 143, 18, seconds <= 20 ? ORANGE : WHITE);
+    }
+
+    DrawText("W A S D - miscare | Shift - sprint | Click - colecteaza | Esc - meniu",
              24, GetScreenHeight() - 34, 18, WHITE);
-    DrawText("Colectarea este automata cand te apropii de un obiect.",
+    DrawText("Apropie-te de un obiect; cercul auriu indica ce poti colecta.",
              24, GetScreenHeight() - 60, 16, WHITE);
+
+    if (rewardPopupTimer > 0.0f) {
+        rewardPopupTimer = std::max(0.0f, rewardPopupTimer - GetFrameTime());
+        const float rise = (0.75f - rewardPopupTimer) * 1.25f;
+        const Vector2 screenPosition = GetWorldToScreen(
+            ToVector3(rewardPopupPosition, 1.8f + rise), camera);
+        DrawText(TextFormat("+%i monede", rewardPopupValue),
+                 static_cast<int>(screenPosition.x - 45.0f),
+                 static_cast<int>(screenPosition.y), 20, GOLD);
+    }
 
     if (map.TrashLeft() == 0) {
         DrawText("Insula este curata! Ai castigat!",

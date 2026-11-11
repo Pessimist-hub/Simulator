@@ -19,7 +19,7 @@ struct Map {
 
     void Init();
     int TrashLeft() const;
-    int Collect(const Point& playerPos, float range);
+    int CollectNearest(const Point& playerPos, float range, Point& collectedPosition);
     void SortByValue();
 };
 

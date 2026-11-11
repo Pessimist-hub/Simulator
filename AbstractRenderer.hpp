@@ -13,5 +13,6 @@ struct AbstractRenderer {
     virtual void PutText(const std::string& text) = 0;
     virtual void DrawMap(const Map& map, const Player& player,
                          const UIManager& ui, const UpgradeManager& upgrades) = 0;
+    virtual void SpawnCollectionEffect(const Point& position, int reward) = 0;
     virtual ~AbstractRenderer() = default;
 };

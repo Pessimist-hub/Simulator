@@ -47,10 +47,16 @@ nu trebuie adaugate in Git.
 - Tine apasat `Shift` in timp ce te misti pentru sprint; stamina se consuma
   si se regenereaza automat cand mergi normal sau stai pe loc.
 - Deplasarea este la viteza normala, jucatorul se roteste spre directia de mers
-  si obiectele apropiate sunt colectate automat. Personajul are brate si
-  picioare articulate, animate in directia deplasarii.
+  si are brate si picioare articulate, animate in directia deplasarii.
+- Apropie-te de un deseu pana apare cercul auriu, apoi da clic stanga ca sa-l
+  colectezi. Apar particule si un afisaj cu monedele castigate.
+- Curata insula in 2 minute pentru un bonus de 100 de monede. Daca timpul
+  expira, intra in prelungiri si poti continua pana colectezi toate deseurile.
+- Apasa `Esc` in joc pentru meniul de pauza: poti continua, reveni la meniul
+  principal sau iesi. Cronometrul se opreste cat timp jocul este in pauza.
 - Apasa `U` sau butonul **Upgrade-uri** pentru magazin. Jocul continua in timp
-  real cat timp magazinul este deschis; `U` sau `Esc` il inchide.
+  real si cronometrul continua cat timp magazinul este deschis; `U` sau `Esc`
+  il inchide.
 - Cumpara upgrade-uri de viteza, raza de colectare, castig de monede,
   capacitate de stamina si regenerare cu monedele obtinute.
 - Fiecare tip de gunoi ofera monede in functie de valoarea sa; upgrade-ul de

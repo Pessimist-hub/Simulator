@@ -1,5 +1,6 @@
 #include "UIManager.hpp"
 
+#include <algorithm>
 #include <string>
 #include <raylib.h>
 
@@ -47,10 +48,20 @@ void DrawPanel(Rectangle panel) {
 
 } // namespace
 
-void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades) {
+void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades,
+                       float deltaTime) {
     if (screen == Screen::Playing || screen == Screen::PlayingUpgrades) {
         if (map.TrashLeft() == 0) {
+            wonInTime = !overtime;
+            if (wonInTime) {
+                player.coins += OnTimeBonus;
+            }
             screen = Screen::Victory;
+            return;
+        }
+
+        if (screen == Screen::Playing && IsKeyPressed(KEY_ESCAPE)) {
+            screen = Screen::PauseMenu;
             return;
         }
 
@@ -60,13 +71,20 @@ void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades) {
                 : Screen::Playing;
             return;
         }
+
+        if (!overtime && deltaTime > 0.0f) {
+            challengeTimeRemaining = std::max(0.0f, challengeTimeRemaining - deltaTime);
+            if (challengeTimeRemaining == 0.0f) {
+                overtime = true;
+            }
+        }
     }
 
     if (screen == Screen::MainMenu) {
         const float centerX = GetScreenWidth() * 0.5f;
         const float firstY = GetScreenHeight() * 0.5f + 10.0f;
         if (Button(CenterButton(centerX, firstY), "Start Joc")) {
-            screen = Screen::Playing;
+            StartNewGame(map, player, upgrades);
         } else if (Button(CenterButton(centerX, firstY + 70.0f), "Upgrade-uri")) {
             screen = Screen::MainMenuUpgrades;
         } else if (Button(CenterButton(centerX, firstY + 140.0f), "Iesire")) {
@@ -107,6 +125,22 @@ void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades) {
 
         if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_U)) {
             screen = Screen::Playing;
+        }
+    } else if (screen == Screen::PauseMenu) {
+        const float centerX = GetScreenWidth() * 0.5f;
+        const float firstY = GetScreenHeight() * 0.5f - 10.0f;
+        if (IsKeyPressed(KEY_ESCAPE) ||
+            Button(CenterButton(centerX, firstY), "Continua jocul")) {
+            screen = Screen::Playing;
+        } else if (Button(CenterButton(centerX, firstY + 70.0f),
+                          "Meniu principal")) {
+            map.Init();
+            player = Player(Point(map.width * 0.5f, 0.0f, map.depth * 0.5f),
+                            0, 2.2f, 1.5f);
+            upgrades.Reset();
+            screen = Screen::MainMenu;
+        } else if (Button(CenterButton(centerX, firstY + 140.0f), "Iesire")) {
+            screen = Screen::Exit;
         }
     } else if (screen == Screen::Victory) {
         const float centerX = GetScreenWidth() * 0.5f;
@@ -167,6 +201,20 @@ void UIManager::DrawOverlay(const Player& player,
                              0.2f, 8, Color{17, 65, 91, 220});
         DrawText("Upgrade-uri [U]",
                  GetScreenWidth() - 190, 34, 18, WHITE);
+    } else if (screen == Screen::PauseMenu) {
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
+                      Color{4, 25, 38, 190});
+        const Rectangle panel{centerX - 250.0f, centerY - 220.0f, 500.0f, 430.0f};
+        DrawPanel(panel);
+        DrawText("JOC IN PAUZA", static_cast<int>(centerX - 143.0f),
+                 static_cast<int>(panel.y + 43.0f), 32, WHITE);
+        DrawText("Apasa Esc ca sa continui jocul.",
+                 static_cast<int>(centerX - 145.0f),
+                 static_cast<int>(panel.y + 94.0f), 17, Muted);
+        const float firstY = centerY - 10.0f;
+        DrawButton(CenterButton(centerX, firstY), "Continua jocul");
+        DrawButton(CenterButton(centerX, firstY + 70.0f), "Meniu principal");
+        DrawButton(CenterButton(centerX, firstY + 140.0f), "Iesire");
     } else if (screen == Screen::PlayingUpgrades) {
         const Rectangle panel{centerX - 300.0f, centerY - 250.0f, 600.0f, 500.0f};
         DrawPanel(panel);
@@ -210,12 +258,19 @@ void UIManager::DrawOverlay(const Player& player,
         DrawText("INSULA ESTE CURATA!",
                  static_cast<int>(centerX - 198.0f),
                  static_cast<int>(panel.y + 55.0f), 32, LIME);
-        DrawText("Felicitari! Ai protejat natura.",
-                 static_cast<int>(centerX - 166.0f),
-                 static_cast<int>(panel.y + 108.0f), 20, WHITE);
+        DrawText(wonInTime ? "Felicitari! Ai curatat insula la timp."
+                           : "Ai curatat insula in prelungiri!",
+                 static_cast<int>(centerX - 205.0f),
+                 static_cast<int>(panel.y + 108.0f), 18, WHITE);
         DrawText(TextFormat("Monede castigate: %i", player.coins),
                  static_cast<int>(centerX - 101.0f),
                  static_cast<int>(panel.y + 151.0f), 18, GOLD);
+        if (wonInTime) {
+            DrawText(TextFormat("Bonus pentru curatenie rapida: +%i monede",
+                                OnTimeBonus),
+                     static_cast<int>(centerX - 170.0f),
+                     static_cast<int>(panel.y + 181.0f), 16, LIME);
+        }
         DrawButton(CenterButton(centerX, centerY + 74.0f), "Joaca din nou");
         DrawButton(CenterButton(centerX, centerY + 144.0f), "Meniu Principal");
     }
@@ -229,9 +284,24 @@ bool UIManager::ShouldSimulate() const {
     return screen == Screen::Playing || screen == Screen::PlayingUpgrades;
 }
 
+bool UIManager::ShouldCollectTrash() const {
+    return screen == Screen::Playing;
+}
+
+float UIManager::ChallengeTimeRemaining() const {
+    return challengeTimeRemaining;
+}
+
+bool UIManager::IsOvertime() const {
+    return overtime;
+}
+
 void UIManager::StartNewGame(Map& map, Player& player, UpgradeManager& upgrades) {
     map.Init();
     player = Player(Point(map.width * 0.5f, 0.0f, map.depth * 0.5f), 0, 2.2f, 1.5f);
     upgrades.Reset();
+    challengeTimeRemaining = ChallengeDuration;
+    overtime = false;
+    wonInTime = false;
     screen = Screen::Playing;
 }
