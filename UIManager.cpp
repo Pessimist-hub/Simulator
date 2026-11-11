@@ -75,7 +75,8 @@ void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades) {
     } else if (screen == Screen::MainMenuUpgrades) {
         const float centerX = GetScreenWidth() * 0.5f;
         const float firstY = GetScreenHeight() * 0.5f + 70.0f;
-        if (Button(CenterButton(centerX, firstY), "Inapoi la meniu")) {
+        if (IsKeyPressed(KEY_ESCAPE) ||
+            Button(CenterButton(centerX, firstY), "Inapoi la meniu")) {
             screen = Screen::MainMenu;
         }
     } else if (screen == Screen::Playing) {
@@ -160,7 +161,7 @@ void UIManager::DrawOverlay(const Player& player,
         DrawText("Upgrade-urile se cumpara in joc, cu monede.",
                  static_cast<int>(panel.x + 42.0f),
                  static_cast<int>(panel.y + 285.0f), 16, Muted);
-        DrawButton(CenterButton(centerX, centerY + 157.0f), "Inapoi la meniu");
+        DrawButton(CenterButton(centerX, centerY + 70.0f), "Inapoi la meniu");
     } else if (screen == Screen::Playing) {
         DrawRectangleRounded(Rectangle{GetScreenWidth() - 208.0f, 22.0f, 184.0f, 44.0f},
                              0.2f, 8, Color{17, 65, 91, 220});
