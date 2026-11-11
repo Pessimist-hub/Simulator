@@ -1,5 +1,12 @@
 #include "Player.hpp"
 
+#include <algorithm>
+#include <cmath>
+
+namespace {
+constexpr float RadiansToDegrees = 57.29577951308232f;
+}
+
 Player::Player() : position(), coins(0), movementSpeed(1.0f), pickupRange(1.5f) {}
 
 Player::Player(const Point& _position, int _coins, float _speed, float _range)
@@ -7,13 +14,18 @@ Player::Player(const Point& _position, int _coins, float _speed, float _range)
 
 Player::Player(const Player& other)
     : position(other.position), coins(other.coins),
-      movementSpeed(other.movementSpeed), pickupRange(other.pickupRange) {}
+      movementSpeed(other.movementSpeed), pickupRange(other.pickupRange),
+      facingAngle(other.facingAngle), animationTime(other.animationTime),
+      isMoving(other.isMoving) {}
 
 Player& Player::operator=(const Player& other) {
     position = other.position;
     coins = other.coins;
     movementSpeed = other.movementSpeed;
     pickupRange = other.pickupRange;
+    facingAngle = other.facingAngle;
+    animationTime = other.animationTime;
+    isMoving = other.isMoving;
     return *this;
 }
 
@@ -42,6 +54,21 @@ std::ostream& operator<<(std::ostream& out, const Player& player) {
     return out;
 }
 
-void Player::Move(float dx, float dz, float mapWidth, float mapDepth) {}
+void Player::Move(float dx, float dz, float mapWidth, float mapDepth, float deltaTime) {
+    const float length = std::sqrt(dx * dx + dz * dz);
+    if (length > 0.0f && deltaTime > 0.0f) {
+        const float distance = movementSpeed * deltaTime;
+        position.x += (dx / length) * distance;
+        position.z += (dz / length) * distance;
+        facingAngle = std::atan2(dx, dz) * RadiansToDegrees;
+        animationTime += deltaTime;
+        isMoving = true;
+    } else {
+        isMoving = false;
+    }
+
+    position.x = std::clamp(position.x, 0.0f, std::max(0.0f, mapWidth));
+    position.z = std::clamp(position.z, 0.0f, std::max(0.0f, mapDepth));
+}
 void Player::BuySpeed() {}
 void Player::BuyRange() {}

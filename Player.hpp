@@ -7,6 +7,9 @@ struct Player {
     int coins = 0;
     float movementSpeed = 1.0f;
     float pickupRange = 1.5f;
+    float facingAngle = 0.0f;
+    float animationTime = 0.0f;
+    bool isMoving = false;
 
     Player();
     Player(const Point& _position, int _coins, float _speed, float _range);
@@ -16,7 +19,7 @@ struct Player {
     bool operator==(const Player& other) const;
     bool operator!=(const Player& other) const;
 
-    void Move(float dx, float dz, float mapWidth, float mapDepth);
+    void Move(float dx, float dz, float mapWidth, float mapDepth, float deltaTime);
     void BuySpeed();
     void BuyRange();
 };

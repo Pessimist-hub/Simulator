@@ -1,60 +1,25 @@
-# Island Cleaner Simulator
+# Island Cleaner Simulator — PlayGame
 
-Un proiect C++ despre un jucător care curăță o insulă de deșeuri. Acest
-repository este dezvoltat în cadrul laboratoarelor de programare C++.
+Aceasta este ramura **`playgame`**, versiunea interactiva 3D a proiectului.
+Este dezvoltata separat de laboratoarele predate: `lab05` si ramurile
+laboratoarelor anterioare raman neschimbate. Jocul porneste de la modelele de
+date realizate in laboratoare si le foloseste in aplicatia raylib.
 
-> **Starea proiectului:** codul conține modelele de bază ale jocului și o
-> demonstrație a operațiilor C++. Mecanici precum mișcarea jucătorului,
-> cumpărarea upgrade-urilor și redarea hărții sunt încă în lucru.
+## Cerinte
 
-## Despre joc
+- Windows 64-bit si MSYS2 UCRT64
+- `g++`, GNU Make si raylib 5
 
-Jucătorul explorează insula și adună deșeurile pentru a o curăța. Ideile
-prevăzute pentru joc includ:
-
-- deplasarea pe hartă cu tastele `W`, `A`, `S`, `D`;
-- colectarea deșeurilor și obținerea de monede;
-- upgrade-uri pentru viteză și distanța de colectare;
-- afișarea numărului de obiecte rămase;
-- încheierea jocului după curățarea insulei.
-
-## Structura proiectului
-
-| Componentă | Responsabilitate |
-|---|---|
-| `Point` | Coordonate 3D și calculul distanței |
-| `Item` | Numele, poziția și valoarea unui obiect |
-| `Player` | Poziția, monedele și parametrii jucătorului |
-| `Map` | Dimensiunile hărții și obiectele de pe insulă |
-| `GameEngine` | Inițializarea și rularea jocului |
-| `Renderer` | Interfața de afișare a hărții și a textului |
-| `EventListener` | Preluarea evenimentelor de intrare |
-| `AudioController` | Gestionarea sunetelor |
-
-## Laboratorul 5 — Module, biblioteci și SQLite
-
-Clasele de date sunt construite în biblioteci statice separate: `libpoint.a`,
-`libitem.a`, `libplayer.a` și `libmap.a`. Aplicația folosește biblioteca
-externă SQLite pentru a salva și încărca dimensiunile hărții și obiectele de
-pe insulă în `island_cleaner.db`. La pornire, demonstrația salvează harta în
-SQLite și o citește înapoi.
-
-### Dependențe
-
-- `g++` compatibil cu C++17
-- GNU Make
-- SQLite 3 (header-ele și biblioteca de dezvoltare, inclusiv `sqlite3.h` /
-  `-lsqlite3`)
-
-În MSYS2 UCRT64, SQLite poate fi instalat cu:
+Instaleaza raylib in MSYS2 UCRT64, daca nu este deja instalata:
 
 ```sh
-pacman -S mingw-w64-ucrt-x86_64-sqlite3
+pacman -S mingw-w64-ucrt-x86_64-raylib
 ```
 
-### Construire și rulare
+## Construire si rulare
 
-Din terminalul MSYS2 UCRT64, în directorul proiectului:
+Deschide terminalul **MSYS2 UCRT64**, mergi in directorul repository-ului si
+ruleaza:
 
 ```sh
 make clean
@@ -62,34 +27,46 @@ make
 ./IslandCleaner.exe
 ```
 
-Bibliotecile și fișierele obiect sunt generate la build și nu trebuie adăugate
-în Git. Baza de date creată de program rămâne locală și este ignorată de Git.
+Din PowerShell, daca `make` nu este in `PATH`, foloseste executabilul instalat
+de MSYS2:
 
-## Laboratorul 4 — Biblioteca standard C++ și STL
+```powershell
+C:\msys64\usr\bin\make.exe clean
+C:\msys64\usr\bin\make.exe
+.\IslandCleaner.exe
+```
 
-Codul folosește elemente din biblioteca standard C++ pentru gestionarea
-datelor și resurselor:
+Porneste jocul din directorul repository-ului, ca sa poata gasi modelele din
+`Assets/Trash`. Executabilul si bibliotecile statice sunt generate local si
+nu trebuie adaugate in Git.
 
-- `std::vector` pentru colecția de obiecte;
-- `std::string` pentru text;
-- fluxuri de intrare și ieșire (`std::istream`, `std::ostream`);
-- referințe și `std::unique_ptr` pentru lucrul cu obiecte;
-- algoritmi STL pentru sortare, căutare, copiere și filtrare.
+## Cum se joaca
 
-Programul demonstrează aceste operații prin afișarea obiectelor, sortarea
-numelor și căutarea unui obiect.
+- Alege **Start Joc** din meniul principal.
+- Misca jucatorul cu `W`, `A`, `S`, `D`.
+- Deplasarea este la viteza normala, jucatorul se roteste spre directia de mers
+  si obiectele apropiate sunt colectate automat.
+- Apasa `U` sau butonul **Upgrade-uri** pentru magazin. Jocul continua in timp
+  real cat timp magazinul este deschis; `U` sau `Esc` il inchide.
+- Cumpara upgrade-uri de viteza si raza de colectare cu monedele obtinute.
+- Curata toate obiectele pentru a vedea ecranul de victorie.
+- Alege **Iesire** din meniu sau inchide fereastra pentru a opri jocul.
 
-## Laboratorul 3 — Constructori și operatori
+## Continutul jocului
 
-Pentru structurile jocului au fost implementați constructori și operatori de
-comparare, atribuire și flux:
+- Insula 3D de 50 × 40 de unitati si 40 de obiecte colectabile.
+- Zece modele GLB de deseuri, convertite din modelul FBX furnizat, aflate in
+  `Assets/Trash`.
+- Meniu principal, magazin de upgrade-uri si ecran de victorie.
+- Clasele de date se construiesc in biblioteci statice; codul meniului,
+  motorului, evenimentelor si redarii se afla in fisierele `.cpp` si `.hpp`
+  din directorul repository-ului.
 
-| Tip | Constructori | Operatori |
-|---|---|---|
-| `Point` | implicit, cu parametri, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
-| `Item` | implicit, cu parametri, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
-| `Player` | implicit, cu parametri, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
-| `Map` | implicit, cu parametri, de copiere | `=`, `==`, `!=`, `>>`, `<<` |
+## Separarea ramurilor
 
-`AbstractRenderer` definește interfața abstractă pentru redare, iar
-`Renderer` o implementează.
+- **`playgame`** — aplicatia interactiva 3D si fisierele sale.
+- **`lab05`** — lucrarea despre biblioteci si SQLite.
+- **`lab04`**, **`lab03`** si celelalte ramuri — lucrarile de laborator
+  respective.
+
+Schimbarea sau testarea jocului in `playgame` nu modifica ramura `lab05`.

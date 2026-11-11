@@ -1,35 +1,37 @@
 #include "GameEngine.hpp"
-#include <iostream>
+#include <raylib.h>
 
 void GameEngine::Init() {
     map.Init();
-    player = Player(Point(0.0f, 0.0f, 0.0f), 0, 1.0f, 1.5f);
+    player = Player(Point(map.width * 0.5f, 0.0f, map.depth * 0.5f), 0, 2.2f, 1.5f);
     listener = std::make_unique<EventListener>();
     renderer = std::make_unique<Renderer>();
     audio = std::make_unique<AudioController>();
-
-    if (renderer) {
-        renderer->Clear();
-    }
-
-    std::cout << "Game engine initialized..." << std::endl;
+    renderer->Initialize();
 }
 
 void GameEngine::Run() {
+    while (renderer && !renderer->ShouldClose() && !ui.ShouldExit()) {
+        const float deltaTime = GetFrameTime();
+        ui.Update(map, player, upgrades);
+
+        float dx = 0.0f;
+        float dz = 0.0f;
+        if (ui.ShouldSimulate()) {
+            listener->GetMovement(dx, dz);
+            player.Move(dx, dz, map.width, map.depth, deltaTime);
+            const int collected = map.Collect(player.position, player.pickupRange);
+            player.coins += collected;
+
+            if (collected > 0) {
+                audio->PlayPickup();
+            }
+        }
+
+        renderer->DrawMap(map, player, ui, upgrades);
+    }
+
     if (renderer) {
-        renderer->DrawMap(map, player);
+        renderer->Close();
     }
-
-    if (listener) {
-        const char event = listener->GetEvent();
-        std::cout << "Last input event: " << event << std::endl;
-    }
-
-    std::cout << "Trash remaining: " << map.TrashLeft() << std::endl;
-
-    if (audio) {
-        audio->PlayPickup();
-    }
-
-    std::cout << "Game engine is running..." << std::endl;
 }

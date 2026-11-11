@@ -1,6 +1,6 @@
 ﻿#include "Map.hpp"
 
-Map::Map() : width(10.0f), depth(10.0f), trash() {}
+Map::Map() : width(50.0f), depth(40.0f), trash() {}
 
 Map::Map(float _width, float _depth) : width(_width), depth(_depth), trash() {}
 
@@ -55,11 +55,22 @@ std::ostream& operator<<(std::ostream& out, const Map& map) {
 }
 
 void Map::Init() {
+    static const char* const trashTypes[] = {
+        "GlassShard", "WineBottle", "AluminumCan", "SodaCan",
+        "Apple", "BananaPeel", "CartonBox", "PaperBag",
+        "MilkBottle", "PlasticBottle"
+    };
+
     trash.clear();
-    trash.emplace_back("Bottle", Point(2.0f, 0.0f, 5.0f), 10);
-    trash.emplace_back("Can", Point(5.0f, 0.0f, 2.0f), 8);
-    trash.emplace_back("Plastic", Point(8.0f, 0.0f, 7.0f), 12);
-    trash.emplace_back("Paper", Point(1.0f, 0.0f, 9.0f), 6);
+    for (int row = 0; row < 5; ++row) {
+        for (int column = 0; column < 8; ++column) {
+            const int index = row * 8 + column;
+            const float x = width * (static_cast<float>(column) + 0.5f) / 8.0f;
+            const float z = depth * (static_cast<float>(row) + 0.5f) / 5.0f;
+            const int value = 5 + (index % 6);
+            trash.emplace_back(trashTypes[index % 10], Point(x, 0.0f, z), value);
+        }
+    }
     SortByValue();
 }
 

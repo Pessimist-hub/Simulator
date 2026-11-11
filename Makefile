@@ -1,7 +1,7 @@
 CXX = g++
 AR = ar
 CPPFLAGS = -std=c++17 -Wall
-LDLIBS = -lsqlite3
+LDLIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
 ifeq ($(OS),Windows_NT)
 REMOVE_BUILD_FILES = powershell -NoProfile -Command "Remove-Item -Force -ErrorAction SilentlyContinue *.o,*.a,*.exe"
 else
@@ -10,7 +10,7 @@ endif
 
 DATA_LIBS = libmap.a libplayer.a libitem.a libpoint.a
 OBJECTS = EventListener.o Renderer.o AudioController.o GameEngine.o \
-	SQLiteMapStorage.o Main.o
+	UIManager.o UpgradeManager.o Main.o
 
 all: IslandCleaner.exe
 
@@ -44,19 +44,27 @@ Map.o: Map.cpp Map.hpp Item.hpp Point.hpp
 EventListener.o: EventListener.cpp EventListener.hpp
 	$(CXX) $(CPPFLAGS) -c EventListener.cpp -o $@
 
-Renderer.o: Renderer.cpp Renderer.hpp AbstractRenderer.hpp Map.hpp Player.hpp
+TRASH_ASSETS = $(wildcard Assets/Trash/*.glb)
+
+Renderer.o: Renderer.cpp Renderer.hpp AbstractRenderer.hpp UIManager.hpp UpgradeManager.hpp Map.hpp Player.hpp Point.hpp $(TRASH_ASSETS)
 	$(CXX) $(CPPFLAGS) -c Renderer.cpp -o $@
 
 AudioController.o: AudioController.cpp AudioController.hpp
 	$(CXX) $(CPPFLAGS) -c AudioController.cpp -o $@
 
-GameEngine.o: GameEngine.cpp GameEngine.hpp Map.hpp Player.hpp
+GameEngine.o: GameEngine.cpp GameEngine.hpp Map.hpp Player.hpp EventListener.hpp Renderer.hpp AudioController.hpp UIManager.hpp UpgradeManager.hpp
 	$(CXX) $(CPPFLAGS) -c GameEngine.cpp -o $@
+
+UIManager.o: UIManager.cpp UIManager.hpp Map.hpp Player.hpp UpgradeManager.hpp
+	$(CXX) $(CPPFLAGS) -c UIManager.cpp -o $@
+
+UpgradeManager.o: UpgradeManager.cpp UpgradeManager.hpp Player.hpp
+	$(CXX) $(CPPFLAGS) -c UpgradeManager.cpp -o $@
 
 SQLiteMapStorage.o: SQLiteMapStorage.cpp SQLiteMapStorage.hpp Map.hpp Item.hpp Point.hpp
 	$(CXX) $(CPPFLAGS) -c SQLiteMapStorage.cpp -o $@
 
-Main.o: Main.cpp Point.hpp Item.hpp Player.hpp Map.hpp GameEngine.hpp SQLiteMapStorage.hpp
+Main.o: Main.cpp GameEngine.hpp
 	$(CXX) $(CPPFLAGS) -c Main.cpp -o $@
 
 clean:

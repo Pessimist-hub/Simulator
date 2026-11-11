@@ -5,8 +5,8 @@
 #include "Item.hpp"
 
 struct Map {
-    float width = 10.0f;
-    float depth = 10.0f;
+    float width = 50.0f;
+    float depth = 40.0f;
     std::vector<Item> trash;
 
     Map();
