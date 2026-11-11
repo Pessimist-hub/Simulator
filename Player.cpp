@@ -30,8 +30,9 @@ std::istream& operator>>(std::istream& in, Player& player) {
     Point position;
     int coins;
     float speed, range;
-    in >> position >> coins >> speed >> range;
-    player = Player(position, coins, speed, range);
+    if (in >> position >> coins >> speed >> range) {
+        player = Player(position, coins, speed, range);
+    }
     return in;
 }
 

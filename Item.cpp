@@ -27,8 +27,9 @@ std::istream& operator>>(std::istream& in, Item& item) {
     std::string name;
     Point position;
     int value;
-    in >> name >> position >> value;   
-    item = Item(name, position, value);
+    if (in >> name >> position >> value) {
+        item = Item(name, position, value);
+    }
     return in;
 }
 

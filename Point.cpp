@@ -21,8 +21,9 @@ bool Point::operator!=(const Point& other) const {
 
 std::istream& operator>>(std::istream& in, Point& point) {
     float x, y, z;
-    in >> x >> y >> z;
-    point = Point(x, y, z);
+    if (in >> x >> y >> z) {
+        point = Point(x, y, z);
+    }
     return in;
 }
 

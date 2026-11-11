@@ -25,11 +25,20 @@ bool Map::operator!=(const Map& other) const {
 std::istream& operator>>(std::istream& in, Map& map) {
     float width, depth;
     int count;
-    in >> width >> depth >> count;
+    if (!(in >> width >> depth >> count)) {
+        return in;
+    }
+    if (count < 0) {
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+
     Map result(width, depth);
     for (int i = 0; i < count; ++i) {
         Item item;
-        in >> item;
+        if (!(in >> item)) {
+            return in;
+        }
         result.trash.push_back(item);
     }
     result.SortByValue();
