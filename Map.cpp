@@ -80,14 +80,18 @@ int Map::TrashLeft() const {
 }
 
 int Map::Collect(const Point& playerPos, float range) {
+    int reward = 0;
     const auto end = std::remove_if(trash.begin(), trash.end(),
-        [&playerPos, range](const Item& item) {
-            return item.position.DistanceTo(playerPos) <= range;
+        [&playerPos, range, &reward](const Item& item) {
+            const bool collected = item.position.DistanceTo(playerPos) <= range;
+            if (collected) {
+                reward += item.value;
+            }
+            return collected;
         });
 
-    const int removed = static_cast<int>(std::distance(end, trash.end()));
     trash.erase(end, trash.end());
-    return removed;
+    return reward;
 }
 
 void Map::SortByValue() {

@@ -7,6 +7,10 @@ struct Player {
     int coins = 0;
     float movementSpeed = 1.0f;
     float pickupRange = 1.5f;
+    float stamina = 100.0f;
+    float maxStamina = 100.0f;
+    float staminaRegeneration = 20.0f;
+    int coinMultiplier = 1;
     float facingAngle = 0.0f;
     float animationTime = 0.0f;
     bool isMoving = false;
@@ -19,7 +23,8 @@ struct Player {
     bool operator==(const Player& other) const;
     bool operator!=(const Player& other) const;
 
-    void Move(float dx, float dz, float mapWidth, float mapDepth, float deltaTime);
+    void Move(float dx, float dz, float mapWidth, float mapDepth, float deltaTime,
+              bool sprinting = false);
     void BuySpeed();
     void BuyRange();
 };

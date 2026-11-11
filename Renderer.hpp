@@ -18,6 +18,4 @@ private:
     bool initialized = false;
     std::array<Model, 10> trashModels{};
     std::array<bool, 10> loadedTrashModels{};
-    Model playerModel{};
-    bool playerModelLoaded = false;
 };

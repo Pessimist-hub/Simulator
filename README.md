@@ -44,11 +44,17 @@ nu trebuie adaugate in Git.
 
 - Alege **Start Joc** din meniul principal.
 - Misca jucatorul cu `W`, `A`, `S`, `D`.
+- Tine apasat `Shift` in timp ce te misti pentru sprint; stamina se consuma
+  si se regenereaza automat cand mergi normal sau stai pe loc.
 - Deplasarea este la viteza normala, jucatorul se roteste spre directia de mers
-  si obiectele apropiate sunt colectate automat.
+  si obiectele apropiate sunt colectate automat. Personajul are brate si
+  picioare articulate, animate in directia deplasarii.
 - Apasa `U` sau butonul **Upgrade-uri** pentru magazin. Jocul continua in timp
   real cat timp magazinul este deschis; `U` sau `Esc` il inchide.
-- Cumpara upgrade-uri de viteza si raza de colectare cu monedele obtinute.
+- Cumpara upgrade-uri de viteza, raza de colectare, castig de monede,
+  capacitate de stamina si regenerare cu monedele obtinute.
+- Fiecare tip de gunoi ofera monede in functie de valoarea sa; upgrade-ul de
+  castig inmulteste recompensa primita.
 - Curata toate obiectele pentru a vedea ecranul de victorie.
 - Alege **Iesire** din meniu sau inchide fereastra pentru a opri jocul.
 

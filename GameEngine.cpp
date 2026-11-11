@@ -19,11 +19,12 @@ void GameEngine::Run() {
         float dz = 0.0f;
         if (ui.ShouldSimulate()) {
             listener->GetMovement(dx, dz);
-            player.Move(dx, dz, map.width, map.depth, deltaTime);
-            const int collected = map.Collect(player.position, player.pickupRange);
-            player.coins += collected;
+            const bool sprinting = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+            player.Move(dx, dz, map.width, map.depth, deltaTime, sprinting);
+            const int reward = map.Collect(player.position, player.pickupRange);
+            player.coins += reward * player.coinMultiplier;
 
-            if (collected > 0) {
+            if (reward > 0) {
                 audio->PlayPickup();
             }
         }

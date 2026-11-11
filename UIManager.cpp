@@ -35,6 +35,11 @@ Rectangle CenterButton(float centerX, float y, float width = 300.0f) {
     return Rectangle{centerX - width * 0.5f, y, width, 54.0f};
 }
 
+Rectangle UpgradeButton(Rectangle panel, int row) {
+    return Rectangle{panel.x + 30.0f, panel.y + 108.0f + row * 54.0f,
+                     panel.width - 60.0f, 46.0f};
+}
+
 void DrawPanel(Rectangle panel) {
     DrawRectangleRounded(panel, 0.06f, 12, Background);
     DrawRectangleRoundedLines(panel, 0.06f, 12, Color{72, 158, 190, 255});
@@ -79,19 +84,22 @@ void UIManager::Update(Map& map, Player& player, UpgradeManager& upgrades) {
             screen = Screen::PlayingUpgrades;
         }
     } else if (screen == Screen::PlayingUpgrades) {
-        const float panelX = GetScreenWidth() * 0.5f - 215.0f;
-        const float panelY = GetScreenHeight() * 0.5f - 145.0f;
-        const Rectangle speedButton{panelX + 30.0f, panelY + 112.0f, 370.0f, 48.0f};
-        const Rectangle rangeButton{panelX + 30.0f, panelY + 174.0f, 370.0f, 48.0f};
-        const Rectangle closeButton{panelX + 30.0f, panelY + 236.0f, 370.0f, 48.0f};
+        const Rectangle panel{GetScreenWidth() * 0.5f - 300.0f,
+                              GetScreenHeight() * 0.5f - 250.0f, 600.0f, 500.0f};
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             const Vector2 mouse = GetMousePosition();
-            if (CheckCollisionPointRec(mouse, speedButton)) {
+            if (CheckCollisionPointRec(mouse, UpgradeButton(panel, 0))) {
                 upgrades.BuySpeed(player);
-            } else if (CheckCollisionPointRec(mouse, rangeButton)) {
+            } else if (CheckCollisionPointRec(mouse, UpgradeButton(panel, 1))) {
                 upgrades.BuyRange(player);
-            } else if (CheckCollisionPointRec(mouse, closeButton)) {
+            } else if (CheckCollisionPointRec(mouse, UpgradeButton(panel, 2))) {
+                upgrades.BuyCoins(player);
+            } else if (CheckCollisionPointRec(mouse, UpgradeButton(panel, 3))) {
+                upgrades.BuyStamina(player);
+            } else if (CheckCollisionPointRec(mouse, UpgradeButton(panel, 4))) {
+                upgrades.BuyRegeneration(player);
+            } else if (CheckCollisionPointRec(mouse, UpgradeButton(panel, 5))) {
                 screen = Screen::Playing;
             }
         }
@@ -132,48 +140,67 @@ void UIManager::DrawOverlay(const Player& player,
         DrawButton(CenterButton(centerX, firstY + 70.0f), "Upgrade-uri");
         DrawButton(CenterButton(centerX, firstY + 140.0f), "Iesire");
     } else if (screen == Screen::MainMenuUpgrades) {
-        const Rectangle panel{centerX - 255.0f, centerY - 210.0f, 510.0f, 420.0f};
+        const Rectangle panel{centerX - 255.0f, centerY - 230.0f, 510.0f, 460.0f};
         DrawPanel(panel);
         DrawText("MAGAZIN DE UPGRADE-URI",
                  static_cast<int>(centerX - 205.0f),
-                 static_cast<int>(panel.y + 45.0f), 26, WHITE);
-        DrawText("Viteza: +0.5 unitati/secunda",
+                 static_cast<int>(panel.y + 35.0f), 26, WHITE);
+        DrawText("Viteza: +0.45 unitati/secunda",
                  static_cast<int>(panel.x + 42.0f),
-                 static_cast<int>(panel.y + 115.0f), 19, SKYBLUE);
-        DrawText("Raza de colectare: +0.5 unitati",
+                 static_cast<int>(panel.y + 100.0f), 18, SKYBLUE);
+        DrawText("Raza de colectare: +0.35 unitati",
                  static_cast<int>(panel.x + 42.0f),
-                 static_cast<int>(panel.y + 157.0f), 19, SKYBLUE);
-        DrawText("Upgrade-urile se cumpara in joc, folosind monede.",
+                 static_cast<int>(panel.y + 140.0f), 18, SKYBLUE);
+        DrawText("Mai multe monede pentru fiecare deseu",
                  static_cast<int>(panel.x + 42.0f),
-                 static_cast<int>(panel.y + 215.0f), 16, Muted);
-        DrawButton(CenterButton(centerX, centerY + 70.0f), "Inapoi la meniu");
+                 static_cast<int>(panel.y + 180.0f), 18, SKYBLUE);
+        DrawText("Stamina maxima: +25 | Regenerare: +5/sec",
+                 static_cast<int>(panel.x + 42.0f),
+                 static_cast<int>(panel.y + 220.0f), 18, SKYBLUE);
+        DrawText("Upgrade-urile se cumpara in joc, cu monede.",
+                 static_cast<int>(panel.x + 42.0f),
+                 static_cast<int>(panel.y + 285.0f), 16, Muted);
+        DrawButton(CenterButton(centerX, centerY + 157.0f), "Inapoi la meniu");
     } else if (screen == Screen::Playing) {
         DrawRectangleRounded(Rectangle{GetScreenWidth() - 208.0f, 22.0f, 184.0f, 44.0f},
                              0.2f, 8, Color{17, 65, 91, 220});
         DrawText("Upgrade-uri [U]",
                  GetScreenWidth() - 190, 34, 18, WHITE);
     } else if (screen == Screen::PlayingUpgrades) {
-        const Rectangle panel{centerX - 215.0f, centerY - 145.0f, 430.0f, 320.0f};
+        const Rectangle panel{centerX - 300.0f, centerY - 250.0f, 600.0f, 500.0f};
         DrawPanel(panel);
         DrawText("UPGRADE-URI", static_cast<int>(panel.x + 30.0f),
-                 static_cast<int>(panel.y + 24.0f), 29, WHITE);
+                 static_cast<int>(panel.y + 20.0f), 28, WHITE);
         DrawText(TextFormat("Monede disponibile: %i", player.coins),
                  static_cast<int>(panel.x + 30.0f),
-                 static_cast<int>(panel.y + 68.0f), 18, GOLD);
+                 static_cast<int>(panel.y + 60.0f), 18, GOLD);
 
-        DrawButton(Rectangle{panel.x + 30.0f, panel.y + 112.0f, 370.0f, 48.0f},
-                   TextFormat("Viteza +0.5 | nivel %i | %i monede",
+        DrawButton(UpgradeButton(panel, 0),
+                   TextFormat("Viteza +0.45 | nivel %i | %i monede",
                               upgrades.SpeedLevel(), upgrades.SpeedPrice()),
                    player.coins >= upgrades.SpeedPrice());
-        DrawButton(Rectangle{panel.x + 30.0f, panel.y + 174.0f, 370.0f, 48.0f},
-                   TextFormat("Raza +0.5 | nivel %i | %i monede",
+        DrawButton(UpgradeButton(panel, 1),
+                   TextFormat("Raza +0.35 | nivel %i | %i monede",
                               upgrades.RangeLevel(), upgrades.RangePrice()),
                    player.coins >= upgrades.RangePrice());
-        DrawButton(Rectangle{panel.x + 30.0f, panel.y + 236.0f, 370.0f, 48.0f},
-                   "Inchide  [U / Esc]");
+        DrawButton(UpgradeButton(panel, 2),
+                   TextFormat("Monede/deseu x%i | nivel %i | %i monede",
+                              player.coinMultiplier + 1, upgrades.CoinLevel(),
+                              upgrades.CoinPrice()),
+                   player.coins >= upgrades.CoinPrice());
+        DrawButton(UpgradeButton(panel, 3),
+                   TextFormat("Stamina maxima +25 | nivel %i | %i monede",
+                              upgrades.StaminaLevel(), upgrades.StaminaPrice()),
+                   player.coins >= upgrades.StaminaPrice());
+        DrawButton(UpgradeButton(panel, 4),
+                   TextFormat("Regenerare stamina +5 | nivel %i | %i monede",
+                              upgrades.RegenerationLevel(),
+                              upgrades.RegenerationPrice()),
+                   player.coins >= upgrades.RegenerationPrice());
+        DrawButton(UpgradeButton(panel, 5), "Inchide  [U / Esc]");
         DrawText("Jocul continua in timp real cat timp magazinul este deschis.",
-                 static_cast<int>(panel.x - 110.0f),
-                 static_cast<int>(panel.y + 296.0f), 15, WHITE);
+                 static_cast<int>(panel.x + 35.0f),
+                 static_cast<int>(panel.y + 455.0f), 15, WHITE);
     } else if (screen == Screen::Victory) {
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
                       Color{4, 25, 38, 195});
