@@ -31,6 +31,40 @@ prevăzute pentru joc includ:
 | `EventListener` | Preluarea evenimentelor de intrare |
 | `AudioController` | Gestionarea sunetelor |
 
+## Laboratorul 5 — Module, biblioteci și SQLite
+
+Clasele de date sunt construite în biblioteci statice separate: `libpoint.a`,
+`libitem.a`, `libplayer.a` și `libmap.a`. Aplicația folosește biblioteca
+externă SQLite pentru a salva și încărca dimensiunile hărții și obiectele de
+pe insulă în `island_cleaner.db`. La pornire, demonstrația salvează harta în
+SQLite și o citește înapoi.
+
+### Dependențe
+
+- `g++` compatibil cu C++17
+- GNU Make
+- SQLite 3 (header-ele și biblioteca de dezvoltare, inclusiv `sqlite3.h` /
+  `-lsqlite3`)
+
+În MSYS2 UCRT64, SQLite poate fi instalat cu:
+
+```sh
+pacman -S mingw-w64-ucrt-x86_64-sqlite3
+```
+
+### Construire și rulare
+
+Din terminalul MSYS2 UCRT64, în directorul proiectului:
+
+```sh
+make clean
+make
+./IslandCleaner.exe
+```
+
+Bibliotecile și fișierele obiect sunt generate la build și nu trebuie adăugate
+în Git. Baza de date creată de program rămâne locală și este ignorată de Git.
+
 ## Laboratorul 4 — Biblioteca standard C++ și STL
 
 Codul folosește elemente din biblioteca standard C++ pentru gestionarea
@@ -59,17 +93,3 @@ comparare, atribuire și flux:
 
 `AbstractRenderer` definește interfața abstractă pentru redare, iar
 `Renderer` o implementează.
-
-## Construire și rulare
-
-Este necesar un compilator `g++` compatibil cu C++17 și utilitarul `make`.
-Din directorul proiectului, rulează:
-
-```sh
-make clean
-make
-./IslandCleaner.exe
-```
-
-`make clean` este opțional la prima construire. Folosește-l pentru a elimina
-fișierele generate și a recompila întregul proiect.

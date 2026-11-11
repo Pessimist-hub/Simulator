@@ -2,5 +2,9 @@
 *.obj
 *.exe
 *.out
+*.a
+*.db
+*.db-shm
+*.db-wal
 .vs/
 *.user
